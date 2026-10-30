@@ -67,7 +67,8 @@ section[hidden]{display:none}
 .fld>span:first-child{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
 .fi{display:flex;align-items:baseline;gap:6px}
 .fi input,.fi select{font:700 28px/1.1 'Barlow Condensed',Impact,sans-serif;width:100%;min-width:0;border:0;border-bottom:2px solid var(--line);background:transparent;color:var(--ink);padding:2px 0}
-.fi select{font-size:24px}
+.fi select{font-size:24px;-webkit-appearance:none;appearance:none;padding:2px 26px 2px 6px;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%238a939e' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 6px center}
+.chip.sm2{font-size:15px;padding:6px 10px}
 .fi input:focus,.fi select:focus{border-bottom-color:var(--ink);outline:none}
 .fi em{font-style:normal;font-size:13px;color:var(--mute);white-space:nowrap}
 .fld small{font-size:12px;color:var(--mute)}
@@ -175,7 +176,7 @@ mk([['d','Deadlift',3,3,75,6],['b','Bench',3,3,75,6],['s','Squat',3,3,75,6],['b'
 const TABS=['Semaine 1','Semaine 2','Semaine 3','Semaine 4 · décharge'];
 const HINT=['','Facile : 4 reps ou plus en réserve. La charge montera au prochain bloc.','Bien : 2 à 3 reps en réserve, c’est la zone idéale.','Dur : 1 rep en réserve. Ne monte pas la semaine suivante.','Limite : à l’échec ou presque. Baisse de 2,5 à 5 kg.'];
 const V=3;
-const fresh=()=>({v:V,m:{s:100,b:70,d:120},tmp:95,bw:75,sex:'m',cat:'so',tab:'home',pl:'s',snap:[],prs:[],e1:[],sc:'w',rl:'s',rm:'e',rp:0,rh:180,rv:120,pk:'',pb:20,pc:false,wk:0,day:0,blk:1,hist:[],log:{},plan:JSON.parse(JSON.stringify(PLAN)),acc:ACC.map(d=>d.map((a,j)=>({id:String(j),n:a[0],s:a[1],r:a[2],p:gm(a[0],a[3]),c:a[4],t:a[5]||null})))});
+const fresh=()=>({v:V,m:{s:100,b:70,d:120},tmp:95,bw:75,sex:'m',cat:'so',tab:'home',pl:'s',snap:[],prs:[],e1:[],sc:'w',rl:'s',rm:'e',rp:0,rh:180,rv:120,ra:90,pk:'',pb:20,pc:false,wk:0,day:0,blk:1,hist:[],log:{},plan:JSON.parse(JSON.stringify(PLAN)),acc:ACC.map(d=>d.map((a,j)=>({id:String(j),n:a[0],s:a[1],r:a[2],p:gm(a[0],a[3]),c:a[4],t:a[5]||null})))});
 let S=fresh(),ref=null,tmr=null,armed=false;
 const load=j=>{const o=JSON.parse(j),x=Object.assign(fresh(),o);if(o.v!==V){x.plan=fresh().plan;x.log={};x.v=V}x.edit=false;x.acc.forEach(d=>d.forEach(a=>{if(!MU[a.p])a.p=gm(a.n,a.p)}));return x};
 try{const j=localStorage.getItem('bloc-force');if(j)S=load(j)}catch(e){}
@@ -206,13 +207,13 @@ function ses(){
  const sets=Array.from({length:r.sets},(_,i)=>`<button class="chip${L.sets&&L.sets[i]?' on':''}${r.l=='d'?' yl':''}" data-set="${i}" aria-pressed="${!!(L.sets&&L.sets[i])}">${w} kg × ${r.reps}</button>`).join('');
  const ED=S.edit,OPT=Object.keys(MU),acc=S.acc[S.day].map((o,jj)=>{const a=[o.n,o.s,o.r,o.p,o.c,o.t],j=o.id,A=(L.a||{})[j]||{},sg=S.wk==3?Math.max(2,Math.round(a[1]*.6)):a[1],ph=a[5]?r25(tm(a[5][0])*a[5][1]/100):'';
   if(ED){const ef=(f,v)=>`<input class="t" style="margin:0" data-ae="${jj}|${f}" value="${esc(v)}">`;return `<div class="acc" style="--c:var(--${r.l});grid-template-columns:auto 1fr">${ico(o.p)}<div>${ef('n',o.n)}<div style="display:flex;gap:6px;margin:6px 0;flex-wrap:wrap;align-items:center"><input class="n" type="number" data-ae="${jj}|s" value="${o.s}" aria-label="Séries"> × <input class="n" style="width:90px" data-ae="${jj}|r" value="${esc(o.r)}" aria-label="Reps"><button class="ghost" style="margin:0" data-adel="${jj}">Supprimer</button></div><div class="sm">Muscle travaillé</div><div class="mus">${OPT.map(x=>`<button data-am="${jj}|${x}" aria-pressed="${x==o.p}">${ico(x,22)}${MU[x]}</button>`).join('')}</div>${ef('c',o.c)}</div></div>`}
-  return `<div class="acc${A.d?' done':''}" style="--c:var(--${r.l})">${ico(a[3])}<div><b>${a[0]}</b><div class="sm">${sg} × ${a[2]} · ${MU[a[3]]||''}${a[4]?' · '+a[4]:''}</div></div><input class="ck" type="checkbox" data-ac="${j}|d" ${A.d?'checked':''} aria-label="Fait"><span></span><input class="n" type="number" step="2.5" placeholder="${ph||'kg'}" data-ac="${j}|w" value="${A.w||''}" aria-label="Charge"><span></span></div>`}).join('');
+  const xs=Array.from({length:sg},(_,i)=>!!(A.sets?A.sets[i]:A.d));return `<div class="acc${A.d?' done':''}" style="--c:var(--${r.l})">${ico(a[3])}<div><b>${a[0]}</b><div class="sm">${sg} × ${a[2]} · ${MU[a[3]]||''}${a[4]?' · '+a[4]:''}</div></div><input class="n" type="number" step="2.5" placeholder="${ph||'kg'}" data-ac="${j}|w" value="${A.w||''}" aria-label="Charge"><div class="chips" style="grid-column:2/-1;margin:4px 0 0">${xs.map((v,i)=>`<button class="chip sm2${v?' on':''}${r.l=='d'?' yl':''}" data-xs="${j}|${i}" aria-pressed="${v}">Série ${i+1}</button>`).join('')}</div></div>`}).join('');
  $('ses').innerHTML=`<section class="ses" style="--c:var(--${r.l})"><h2>${r.day} · ${esc(r.name)}</h2><div class="sm">${u('sets')} × ${u('reps')} à ${u('pct','step="2.5"')} % du TM · RPE ${u('rpe','step="0.5"')} · charge de travail <b>${w} kg</b></div><div class="sm" style="margin-top:6px">Échauffement : ${wu}</div><div class="chips">${sets}</div><div class="sm">Repos entre les séries : <input class="n" type="number" step="0.5" min="0.5" data-rest="${r.h?'rh':'rv'}" value="${(r.h?S.rh:S.rv)/60}" aria-label="Repos en minutes"> min · le chrono démarre quand tu coches une série</div>
  <div class="sm">Dernière série réellement faite : <input class="n" type="number" step="2.5" placeholder="${w}" data-lg="tw" value="${L.tw||''}"> kg × <input class="n" type="number" placeholder="${r.reps}" data-lg="tr" value="${L.tr||''}"> reps</div>
  <div class="sm" style="margin-top:8px">Comment c’était ?</div><div class="rates">${['Facile','Bien','Dur','Limite'].map((x,i)=>`<button data-rate="${i+1}" aria-pressed="${L.rate==i+1}">${x}</button>`).join('')}</div>
  <div class="sm">${HINT[L.rate||0]||'Note la séance pour que le bloc suivant s’adapte.'}</div>
  <input class="t" data-lg="note" placeholder="Ressenti, notes…" value="${esc(L.note||'')}" aria-label="Notes">
- <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px"><h3>Accessoires</h3><button class="ghost" style="margin:0" data-edit="1">${ED?'Terminé':'✎ Modifier les exercices'}</button></div>${acc}${ED?'<button class="ghost go" data-aadd="1">+ Ajouter un exercice</button>':''}</section>`;
+ <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px"><h3>Accessoires</h3>${ED?'':'<button class="ghost" style="margin:0" data-edit="1">✎ Modifier les exercices</button>'}</div>${ED?'':`<div class="sm">Repos entre les séries d’accessoires : <input class="n" type="number" step="0.5" min="0.5" data-rest="ra" value="${S.ra/60}" aria-label="Repos accessoires en minutes"> min</div>`}${acc}${ED?'<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="ghost" data-aadd="1">+ Ajouter un exercice</button><button class="ghost go" data-edit="1">Terminé</button></div>':''}</section>`;
 }
 function plan(){
  const R=[];['s','b','d'].forEach(l=>{
@@ -274,6 +275,7 @@ document.addEventListener('click',e=>{
  else if(d.pq)S.pk=d.pq;
  else if(d.prsave)prsave();
  else if(d.pl)S.pl=d.pl;
+ else if(d.xs){const[j,i]=d.xs.split('|'),L=lg(),o=S.acc[S.day].find(x=>x.id==j);if(o){L.a=L.a||{};const A=L.a[j]=L.a[j]||{},sg=S.wk==3?Math.max(2,Math.round(o.s*.6)):o.s;A.sets=Array.from({length:sg},(_,k)=>!!(A.sets?A.sets[k]:A.d));A.sets[+i]=!A.sets[+i];A.d=A.sets.every(Boolean);if(A.sets[+i]){const k=A.sets.filter(Boolean).length;tstart(S.ra,k>=sg?`${o.n} terminé`:`${o.n} · série ${k}/${sg} faite`)}}}
  else if(d.am){const[j,k]=d.am.split('|');S.acc[S.day][+j].p=k}
  else if(d.edit)S.edit=!S.edit;
  else if(d.aadd)S.acc[S.day].push({id:'x'+Date.now().toString(36),n:'Nouvel exercice',s:3,r:'10',p:'dos',c:'',t:null});
@@ -333,7 +335,7 @@ function stc(){
   tot++;const L=S.log[w+'.'+i]||{},ds=(L.sets||[]).filter(Boolean).length;
   if(ds&&ds>=r.sets)ses++;sets+=ds;reps+=ds*r.reps;vol+=ds*r.reps*wt(r);MG[r.l].forEach(g=>G[g]=(G[g]||0)+ds);
   bars.push({l:r.l,rate:L.rate||0,lab:DAYS[i].slice(0,2)});
-  (S.acc[i]||[]).forEach(a=>{const A=(L.a||{})[a.id];if(A&&A.d){const sg=w==3?Math.max(2,Math.round(a.s*.6)):a.s,rp=a.p=='abdos'?0:(parseInt(a.r)||0),g=MU[a.p]?a.p:'dos';sets+=sg;reps+=sg*rp;vol+=sg*rp*(+A.w||0);G[g]=(G[g]||0)+sg}});
+  (S.acc[i]||[]).forEach(a=>{const A=(L.a||{})[a.id];const sg=w==3?Math.max(2,Math.round(a.s*.6)):a.s,nd=A?(A.sets?A.sets.filter(Boolean).length:(A.d?sg:0)):0;if(nd){const rp=a.p=='abdos'?0:(parseInt(a.r)||0),g=MU[a.p]?a.p:'dos';sets+=nd;reps+=nd*rp;vol+=nd*rp*(+A.w||0);G[g]=(G[g]||0)+nd}});
  }));
  return{ses,tot,sets,reps,vol,G,bars};
 }
@@ -355,9 +357,9 @@ function lsvg(P,col){
 function recv(){
  const l=S.rl,col=`var(--${l})`,lim=S.rp?Date.now()-S.rp*864e5:0,em=S.rm=='e';
  const P=[].concat(S.prs.filter(p=>p.l==l).map(p=>({t:p.t,e:p.e,w:p.w,r:p.r,src:'PR'})),S.e1.filter(x=>x.l==l).map(x=>({t:x.t,e:x.e,w:x.w,r:x.r,src:'Séance'})),em?S.snap.map(x=>({t:x.t,e:x[l],w:0,src:'1RM saisi'})):[]).filter(p=>p.t>=lim&&(em?p.e:p.w)).sort((a,b)=>a.t-b.t);
- const V=P.map(p=>em?p.e:p.w),mn=V.length?Math.min(...V):0,mx=V.length?Math.max(...V):0,ev=V.length?Math.round((V[V.length-1]-V[0])*10)/10:0;
- const kpi=`<div class='kpi' style='--c:${col}'><div><b>${V.length?mn:'–'}<small> kg</small></b><span>Min</span></div><div><b>${V.length?mx:'–'}<small> kg</small></b><span>Max</span></div><div><b>${V.length?(ev>0?'+':'')+ev:'–'}<small> kg</small></b><span>Évolution</span></div></div>`;
- $('v-rec').innerHTML=`<h2 class='sec'>Historique des records</h2>${seg('rl',[['s','Squat'],['b','Bench'],['d','Deadlift']],l)}${seg('rm',[['e','1RM estimé'],['w','Charge la plus lourde']],S.rm)}<p class='sm'>${em?'1RM estimé : le poids que tu pourrais soulever une seule fois, calculé à partir de tes séries (formule d’Epley). Exemple : 120 kg × 5 donne environ 140 kg.':'Charge la plus lourde : le poids réellement mis sur la barre, quel que soit le nombre de reps. Exemple : 120 kg × 5 compte pour 120 kg.'}</p>${seg('rp',[[30,'1 mois'],[90,'3 mois'],[180,'6 mois'],[0,'Tout']],S.rp)}${kpi}<div class='box'><h2>${em?'1RM estimé':'Charge la plus lourde'} · ${N[l]}</h2>${P.length?lsvg(P.map((p,i)=>({t:p.t,v:V[i]})),col):`<p class='sm'>Pas encore de données sur cette période. Note tes séances lourdes (Facile, Bien, Dur, Limite) ou enregistre un PR avec le bouton +.</p>`}</div>${P.length?`<div class='box'><h2>Détail</h2>${P.slice().reverse().slice(0,12).map(p=>`<div class='pr'><span>${fd(p.t)} · ${p.src}</span><span>${p.w?p.w+' kg × '+p.r+' · ':''}<b>${em?p.e:p.w} kg</b></span></div>`).join('')}</div>`:''}`;
+ const V=P.map(p=>em?p.e:p.w),mn=V.length?Math.min(...V):0,mx=V.length?Math.max(...V):0,ev=V.length?Math.round((Math.max(...V)-V[0])*10)/10:0;
+ const kpi=`<div class='kpi' style='--c:${col}'><div><b>${V.length?mn:'–'}<small> kg</small></b><span>Min</span></div><div><b>${V.length?mx:'–'}<small> kg</small></b><span>Max</span></div><div><b>${V.length?(ev>0?'+':'')+ev:'–'}<small> kg</small></b><span>Progression</span></div></div>`;
+ $('v-rec').innerHTML=`<h2 class='sec'>Historique des records</h2>${seg('rl',[['s','Squat'],['b','Bench'],['d','Deadlift']],l)}${seg('rm',[['e','1RM estimé'],['w','Charge la plus lourde']],S.rm)}<p class='sm'>${em?'1RM estimé : le poids que tu pourrais soulever une seule fois, calculé à partir de tes séries (formule d’Epley). Exemple : 120 kg × 5 donne environ 140 kg.':'Charge la plus lourde : le poids réellement mis sur la barre, quel que soit le nombre de reps. Exemple : 120 kg × 5 compte pour 120 kg.'}</p>${seg('rp',[[30,'1 mois'],[90,'3 mois'],[180,'6 mois'],[0,'Tout']],S.rp)}${kpi}<p class='sm'>Progression : ta meilleure valeur sur la période moins la première. Une séance plus légère donne une estimation plus basse, ce n’est pas une perte de force.</p><div class='box'><h2>${em?'1RM estimé':'Charge la plus lourde'} · ${N[l]}</h2>${P.length?lsvg(P.map((p,i)=>({t:p.t,v:V[i]})),col):`<p class='sm'>Pas encore de données sur cette période. Note tes séances lourdes (Facile, Bien, Dur, Limite) ou enregistre un PR avec le bouton +.</p>`}</div>${P.length?`<div class='box'><h2>Détail</h2>${P.slice().reverse().slice(0,12).map(p=>`<div class='pr'><span>${fd(p.t)} · ${p.src}</span><span>${p.w?p.w+' kg × '+p.r+' · ':''}<b>${em?p.e:p.w} kg</b></span></div>`).join('')}</div>`:''}`;
 }
 let tEnd=0,tTot=0,tInt=0,tAC=null;
 function tstart(sec,info){
