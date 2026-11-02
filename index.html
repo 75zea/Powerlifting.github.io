@@ -131,7 +131,7 @@ section[hidden]{display:none}
 <div id="ses"></div>
 <div class="box" id="nb"></div>
 <button class="ghost" id="reset">Remettre le programme d’origine</button></section>
-<section id="v-pr"><div class="box" id="plbox"></div><div class="box" id="prbox"></div></section>
+<section id="v-pr"><div class="box" id="plbox"></div><div class="box" id="prbox"></div><div class="box" id="rzbox"></div></section>
 <section id="v-stats"></section>
 <section id="v-rec"></section>
 <div class="timer" id="timer" hidden></div>
@@ -237,7 +237,7 @@ function render(){
  $('sub').hidden=true;
  ['home','bloc','pr','stats','rec'].forEach(v=>{$('v-'+v).hidden=S.tab!=v});
  $('nav').innerHTML=NAV.map(([k,n,p])=>`<button data-tab='${k}'${k=='pr'?` class='plus' aria-label='${n}'`:''}${S.tab==k?` aria-current='page'`:''}><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='${p}'/></svg>${k=='pr'?'':n}</button>`).join('');
- lvl();if(S.tab=='home'){ff();ch()}else if(S.tab=='bloc'){ses();nb()}else if(S.tab=='pr'){plx();prx()}else if(S.tab=='stats')stv();else recv();
+ lvl();if(S.tab=='home'){ff();ch()}else if(S.tab=='bloc'){ses();nb()}else if(S.tab=='pr'){plx();prx();rzv()}else if(S.tab=='stats')stv();else recv();
 }
 function save(){
  try{localStorage.setItem('bloc-force',JSON.stringify(S))}catch(e){}
@@ -263,6 +263,9 @@ document.addEventListener('click',e=>{
  const b=e.target.closest('button');if(!b)return;const d=b.dataset;
  if(d.tadd){tEnd=Math.max(tEnd,Date.now())+ +d.tadd*1000;tTot=Math.max(1,tTot+ +d.tadd);$('timer').dataset.done='';clearInterval(tInt);tInt=setInterval(ttick,250);ttick();return}
  if(d.tstop){tstop();return}
+ if(d.rz){if(rz!==d.rz){rz=d.rz;rzv();clearTimeout(rzT);rzT=setTimeout(()=>{rz='';if(S.tab=='pr')rzv()},4000);return}
+  rz='';clearTimeout(rzT);if(d.rz=='h')Object.assign(S,{log:{},prs:[],e1:[],snap:[],hist:[],blk:1,wk:0,day:0,pmsg:''});else S=fresh();
+  tstop();save();render();return}
  if(d.tab)S.tab=d.tab;
  else if(d.wk!==undefined)S.wk=+d.wk;
  else if(d.day!==undefined)S.day=+d.day;
@@ -383,6 +386,8 @@ function ttick(){
  if(!left&&!el.dataset.done){el.dataset.done='1';clearInterval(tInt);tbeep()}
 }
 const fz=x=>String(x).replace('.',',');
+let rz='',rzT=0;
+function rzv(){$('rzbox').innerHTML=`<h2>Réinitialiser</h2><div class='sm' style='margin-bottom:8px'>Pratique après des tests. Ces actions sont définitives : appuie une deuxième fois pour confirmer.</div><div style='display:flex;gap:8px;flex-wrap:wrap'><button class='ghost' style='margin:0' data-rz='h'>${rz=='h'?'Confirmer : effacer l’historique':'Effacer l’historique'}</button><button class='ghost' style='margin:0;color:var(--s);border-color:var(--s)' data-rz='all'>${rz=='all'?'Confirmer : tout remettre à zéro':'Tout remettre à zéro'}</button></div><div class='sm' style='margin-top:10px'><b>Effacer l’historique</b> : séances cochées et notées, PR, records, courbe et blocs passés. Tes 1RM, tes réglages et tes exercices sont gardés.<br><b>Tout remettre à zéro</b> : l’app revient à son état de départ, y compris tes 1RM, tes réglages et tes exercices personnalisés.</div>`}
 function plx(){
  const r=S.plan[S.wk][S.day],qs=[[wt(r),'Séance sélectionnée'],[S.m.s,'1RM squat'],[S.m.b,'1RM bench'],[S.m.d,'1RM deadlift']];
  $('plbox').innerHTML=`<h2>Calculateur de disques</h2><div class='sm'>Entre la charge totale : l’app te donne les disques à mettre de chaque côté.</div><div class='qk'>${qs.map(([v,n])=>`<button data-pq='${v}'>${n} · ${fz(v)} kg</button>`).join('')}</div><div class='sm'>Charge <input class='n' id='pk' type='number' step='2.5' value='${S.pk||''}' placeholder='kg'> kg · Barre <select class='n' style='width:auto' id='pbar'>${[20,15,10].map(b=>`<option value='${b}'${b==S.pb?' selected':''}>${b} kg</option>`).join('')}</select> <label><input type='checkbox' id='pcol'${S.pc?' checked':''}> colliers de compétition (2 × 2,5 kg)</label></div><div id='plv' style='margin-top:10px'></div>`;
