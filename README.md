@@ -18,7 +18,7 @@ Projet personnel, non affilié à la FFForce.
 - Séries à cocher, et chrono de repos en plein écran qui démarre à chaque série cochée.
 - Notation de chaque séance lourde (Facile, Bien, Dur, Limite), utilisée pour calculer le bloc suivant.
 - Accessoires entièrement modifiables (nom, séries, reps, muscle travaillé).
-- Préparation du bloc suivant : nouveau 1RM estimé et ajustement du nombre de séries.
+- Préparation du bloc suivant : nouveau 1RM estimé, ajustement du nombre de séries, et choix du type de bloc (Volume, Force, Force lourde, Pic de forme) avec une recommandation selon le bloc précédent.
 
 **Calculatrice**
 - Calculateur de disques : quels disques mettre de chaque côté de la barre, avec option colliers de compétition.
