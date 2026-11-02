@@ -205,7 +205,7 @@ function ses(){
  const r=S.plan[S.wk][S.day],k=KEY(),L=S.log[k]||{},w=wt(r),u=(a,b)=>`<input class="n" type="number" ${b||''} data-f="${a}" value="${r[a]}">`;
  const wu=[20,w*.5,w*.7,w*.85].map((x,i)=>`${i?r25(x):x}×${[10,5,3,1][i]}`).join(' · ');
  const sets=Array.from({length:r.sets},(_,i)=>`<button class="chip${L.sets&&L.sets[i]?' on':''}${r.l=='d'?' yl':''}" data-set="${i}" aria-pressed="${!!(L.sets&&L.sets[i])}">${w} kg × ${r.reps}</button>`).join('');
- const ED=S.edit,OPT=Object.keys(MU),acc=S.acc[S.day].map((o,jj)=>{const a=[o.n,o.s,o.r,o.p,o.c,o.t],j=o.id,A=(L.a||{})[j]||{},sg=S.wk==3?Math.max(2,Math.round(a[1]*.6)):a[1],ph=a[5]?r25(tm(a[5][0])*a[5][1]/100):'';
+ const ED=S.edit,OPT=Object.keys(MU),acc=S.acc[S.day].map((o,jj)=>{const a=[o.n,o.s,o.r,o.p,o.c,o.t],j=o.id,A=(L.a||{})[j]||{},sg=a[1],ph=a[5]?r25(tm(a[5][0])*a[5][1]/100):'';
   if(ED){const ef=(f,v)=>`<input class="t" style="margin:0" data-ae="${jj}|${f}" value="${esc(v)}">`;return `<div class="acc" style="--c:var(--${r.l});grid-template-columns:auto 1fr">${ico(o.p)}<div>${ef('n',o.n)}<div style="display:flex;gap:6px;margin:6px 0;flex-wrap:wrap;align-items:center"><input class="n" type="number" data-ae="${jj}|s" value="${o.s}" aria-label="Séries"> × <input class="n" style="width:90px" data-ae="${jj}|r" value="${esc(o.r)}" aria-label="Reps"><button class="ghost" style="margin:0" data-adel="${jj}">Supprimer</button></div><div class="sm">Muscle travaillé</div><div class="mus">${OPT.map(x=>`<button data-am="${jj}|${x}" aria-pressed="${x==o.p}">${ico(x,22)}${MU[x]}</button>`).join('')}</div>${ef('c',o.c)}</div></div>`}
   const xs=Array.from({length:sg},(_,i)=>!!(A.sets?A.sets[i]:A.d));return `<div class="acc${A.d?' done':''}" style="--c:var(--${r.l})">${ico(a[3])}<div><b>${a[0]}</b><div class="sm">${sg} × ${a[2]} · ${MU[a[3]]||''}${a[4]?' · '+a[4]:''}</div></div><input class="n" type="number" step="2.5" placeholder="${ph||'kg'}" data-ac="${j}|w" value="${A.w||''}" aria-label="Charge"><div class="chips" style="grid-column:2/-1;margin:4px 0 0">${xs.map((v,i)=>`<button class="chip sm2${v?' on':''}${r.l=='d'?' yl':''}" data-xs="${j}|${i}" aria-pressed="${v}">Série ${i+1}</button>`).join('')}</div></div>`}).join('');
  $('ses').innerHTML=`<section class="ses" style="--c:var(--${r.l})"><h2>${r.day} · ${esc(r.name)}</h2><div class="sm">${u('sets')} × ${u('reps')} à ${u('pct','step="2.5"')} % du TM · RPE ${u('rpe','step="0.5"')} · charge de travail <b>${w} kg</b></div><div class="sm" style="margin-top:6px">Échauffement : ${wu}</div><div class="chips">${sets}</div><div class="sm">Repos entre les séries : <input class="n" type="number" step="0.5" min="0.5" data-rest="${r.h?'rh':'rv'}" value="${(r.h?S.rh:S.rv)/60}" aria-label="Repos en minutes"> min · le chrono démarre quand tu coches une série</div>
@@ -213,7 +213,7 @@ function ses(){
  <div class="sm" style="margin-top:8px">Comment c’était ?</div><div class="rates">${['Facile','Bien','Dur','Limite'].map((x,i)=>`<button data-rate="${i+1}" aria-pressed="${L.rate==i+1}">${x}</button>`).join('')}</div>
  <div class="sm">${HINT[L.rate||0]||'Note la séance pour que le bloc suivant s’adapte.'}</div>
  <input class="t" data-lg="note" placeholder="Ressenti, notes…" value="${esc(L.note||'')}" aria-label="Notes">
- <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px"><h3>Accessoires</h3>${ED?'':'<button class="ghost" style="margin:0" data-edit="1">✎ Modifier les exercices</button>'}</div>${ED?'':`<div class="sm">Repos entre les séries d’accessoires : <input class="n" type="number" step="0.5" min="0.5" data-rest="ra" value="${S.ra/60}" aria-label="Repos accessoires en minutes"> min</div>`}${acc}${ED?'<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="ghost" data-aadd="1">+ Ajouter un exercice</button><button class="ghost go" data-edit="1">Terminé</button></div>':''}</section>`;
+ <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px"><h3>Accessoires</h3>${ED?'':'<button class="ghost" style="margin:0" data-edit="1">✎ Modifier les exercices</button>'}</div>${ED?'':`<div class="sm">Repos entre les séries d’accessoires : <input class="n" type="number" step="0.5" min="0.5" data-rest="ra" value="${S.ra/60}" aria-label="Repos accessoires en minutes"> min</div>`}${!ED&&S.wk==3?'<div class="sm">Semaine de décharge : fais environ la moitié de tes séries habituelles, avec des charges légères.</div>':''}${acc}${ED?'<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="ghost" data-aadd="1">+ Ajouter un exercice</button><button class="ghost go" data-edit="1">Terminé</button></div>':''}</section>`;
 }
 function plan(){
  const R=[];['s','b','d'].forEach(l=>{
@@ -278,7 +278,7 @@ document.addEventListener('click',e=>{
  else if(d.pq)S.pk=d.pq;
  else if(d.prsave)prsave();
  else if(d.pl)S.pl=d.pl;
- else if(d.xs){const[j,i]=d.xs.split('|'),L=lg(),o=S.acc[S.day].find(x=>x.id==j);if(o){L.a=L.a||{};const A=L.a[j]=L.a[j]||{},sg=S.wk==3?Math.max(2,Math.round(o.s*.6)):o.s;A.sets=Array.from({length:sg},(_,k)=>!!(A.sets?A.sets[k]:A.d));A.sets[+i]=!A.sets[+i];A.d=A.sets.every(Boolean);if(A.sets[+i]){const k=A.sets.filter(Boolean).length;tstart(S.ra,k>=sg?`${o.n} terminé`:`${o.n} · série ${k}/${sg} faite`)}}}
+ else if(d.xs){const[j,i]=d.xs.split('|'),L=lg(),o=S.acc[S.day].find(x=>x.id==j);if(o){L.a=L.a||{};const A=L.a[j]=L.a[j]||{},sg=o.s;A.sets=Array.from({length:sg},(_,k)=>!!(A.sets?A.sets[k]:A.d));A.sets[+i]=!A.sets[+i];A.d=A.sets.every(Boolean);if(A.sets[+i]){const k=A.sets.filter(Boolean).length;tstart(S.ra,k>=sg?`${o.n} terminé`:`${o.n} · série ${k}/${sg} faite`)}}}
  else if(d.am){const[j,k]=d.am.split('|');S.acc[S.day][+j].p=k}
  else if(d.edit)S.edit=!S.edit;
  else if(d.aadd)S.acc[S.day].push({id:'x'+Date.now().toString(36),n:'Nouvel exercice',s:3,r:'10',p:'dos',c:'',t:null});
@@ -338,7 +338,7 @@ function stc(){
   tot++;const L=S.log[w+'.'+i]||{},ds=(L.sets||[]).filter(Boolean).length;
   if(ds&&ds>=r.sets)ses++;sets+=ds;reps+=ds*r.reps;vol+=ds*r.reps*wt(r);MG[r.l].forEach(g=>G[g]=(G[g]||0)+ds);
   bars.push({l:r.l,rate:L.rate||0,lab:DAYS[i].slice(0,2)});
-  (S.acc[i]||[]).forEach(a=>{const A=(L.a||{})[a.id];const sg=w==3?Math.max(2,Math.round(a.s*.6)):a.s,nd=A?(A.sets?A.sets.filter(Boolean).length:(A.d?sg:0)):0;if(nd){const rp=a.p=='abdos'?0:(parseInt(a.r)||0),g=MU[a.p]?a.p:'dos';sets+=nd;reps+=nd*rp;vol+=nd*rp*(+A.w||0);G[g]=(G[g]||0)+nd}});
+  (S.acc[i]||[]).forEach(a=>{const A=(L.a||{})[a.id];const sg=a.s,nd=A?(A.sets?A.sets.filter(Boolean).length:(A.d?sg:0)):0;if(nd){const rp=a.p=='abdos'?0:(parseInt(a.r)||0),g=MU[a.p]?a.p:'dos';sets+=nd;reps+=nd*rp;vol+=nd*rp*(+A.w||0);G[g]=(G[g]||0)+nd}});
  }));
  return{ses,tot,sets,reps,vol,G,bars};
 }
