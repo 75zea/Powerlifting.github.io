@@ -95,7 +95,7 @@ section[hidden]{display:none}
 .btc b{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font:700 18px 'Barlow Condensed',Impact,sans-serif}
 .btc em{font:600 11px Barlow,sans-serif;background:var(--ok);color:#fff;padding:2px 7px;border-radius:8px}
 .btc span{display:block;font-size:12.5px;color:var(--mute);margin-top:3px;line-height:1.35}
-.rates.r5{grid-template-columns:repeat(5,1fr)}
+.rates.r5{grid-template-columns:repeat(4,1fr)}
 .dot.top{box-shadow:0 0 0 3px var(--card),0 0 0 5px var(--c)}
 .lg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;max-width:420px;text-align:center;font-size:13px;color:var(--mute)}
 .lg>span{display:flex;flex-direction:column;align-items:center;gap:1px}
@@ -252,7 +252,7 @@ const ACC=[
 const NM=['Deadlift','Bench','Squat','Bench pause 2 s','Squat volume'],LL=['d','b','s','b','s'],FF=[1,1,1,.92,1];
 const SCH=[{h:[5,7],v:[8,7]},{h:[4,8],v:[7,7.5]},{h:[3,8.5],v:[6,8]},{h:[3,6],v:[6,6]}];
 const genPlan=(bs,vs)=>SCH.map((w,wi)=>NM.map((name,i)=>{const h=i<3,l=LL[i],[reps,rpe]=h?w.h:w.v;return {day:DAYS[i],l,name,h:h?1:0,f:FF[i],reps,rpe,sets:wi==3?2:h?bs[l]:vs}}));
-const RPEH={6:'RPE 6 : 4 reps ou plus en réserve, c’était facile.',7:'RPE 7 : 3 reps en réserve.',8:'RPE 8 : 2 reps en réserve, la zone idéale pour progresser.',9:'RPE 9 : 1 rep en réserve, c’était dur.',10:'RPE 10 : aucune rep en réserve, c’était ton max.'};
+const RPEH={6:'RPE 6 : 4 reps ou plus en réserve, c’était facile.',7:'RPE 7 : 3 reps en réserve.',7.5:'RPE 7,5 : 2 reps en réserve sûres, peut-être 3.',8:'RPE 8 : 2 reps en réserve, la zone idéale pour progresser.',8.5:'RPE 8,5 : 1 rep en réserve sûre, peut-être 2.',9:'RPE 9 : 1 rep en réserve, c’était dur.',9.5:'RPE 9,5 : peut-être encore 1 rep, sans certitude.',10:'RPE 10 : aucune rep en réserve, c’était ton max.'};
 const rpeOf=L=>L?(L.rpe||({1:6,2:7.5,3:9,4:10})[L.rate]||0):0,r05=x=>Math.round(x*2)/2;
 const V=4;
 const fresh=()=>({v:V,m:{s:100,b:70,d:120},bw:75,sex:'m',cat:'so',tab:'home',bs:{s:3,b:3,d:3},vs:4,cm0:null,pl:'s',snap:[],prs:[],e1:[],sc:'w',rl:'s',rp:0,rh:180,rv:120,ra:90,pk:'',pb:20,pc:false,wk:0,day:0,blk:1,hist:[],log:{},plan:genPlan({s:3,b:3,d:3},4),acc:ACC.map(d=>d.map((a,j)=>({id:String(j),n:a[0],s:a[1],r:a[2],p:gm(a[0],a[3]),c:a[4],t:a[5]||null})))});
@@ -299,9 +299,9 @@ function ses(){
  <div class="wus"><span class="sm" style="align-self:center">Échauffement :</span>${wu}</div>
  <div class="dots">${sets}</div>
  <div class="sm">${nd}/${n} séries · repos ${fz(rest)} min${r.h?` · série 1 à ${fz(w)} kg, puis ${fz(b2)} kg`:''}</div>
- <div class="lbl ht">${r.h?'RPE de ta série lourde':'RPE de la séance'} ${ib('rpe')}</div>${it('rpe','RPE : effort ressenti sur 10. 10 = aucune rep en réserve, 9 = 1 rep, 8 = 2 reps, 7 = 3 reps, 6 = 4 reps ou plus. Sur les jours lourds, ta note ajuste automatiquement ton 1RM estimé, et donc les charges des séances suivantes.')}
- <div class="rates r5">${[6,7,8,9,10].map(x=>`<button data-rpe="${x}" aria-pressed="${rp==x}">${x}</button>`).join('')}</div>
- ${rp?`<div class="sm">${RPEH[Math.round(rp)]||''}</div>${L.mchg?`<div class="sm" style="color:var(--ok)">${L.mchg}</div>`:''}${r.h?`<div class="sm" style="margin-top:6px">Série lourde réellement faite : <input class="n" type="number" step="2.5" placeholder="${fz(w)}" data-lg="tw" value="${L.tw||''}"> kg × <input class="n" type="number" placeholder="${r.reps}" data-lg="tr" value="${L.tr||''}"> reps</div>`:''}`:''}
+ <div class="lbl ht">${r.h?'RPE de ta série lourde':'RPE de la séance'} ${ib('rpe')}</div>${it('rpe','RPE : effort ressenti sur 10. 10 = aucune rep en réserve, 9 = 1 rep, 8 = 2 reps, 7 = 3 reps, 6 = 4 reps ou plus. Les demi-points servent quand tu hésites : 8,5 = sûr d’avoir encore 1 rep, peut-être 2. Sur les jours lourds, ta note ajuste automatiquement ton 1RM estimé, et donc les charges des séances suivantes.')}
+ <div class="rates r5">${[6,7,7.5,8,8.5,9,9.5,10].map(x=>`<button data-rpe="${x}" aria-pressed="${rp==x}">${fz(x)}</button>`).join('')}</div>
+ ${rp?`<div class="sm">${RPEH[rp]||''}</div>${L.mchg?`<div class="sm" style="color:var(--ok)">${L.mchg}</div>`:''}${r.h?`<div class="sm" style="margin-top:6px">Série lourde réellement faite : <input class="n" type="number" step="2.5" placeholder="${fz(w)}" data-lg="tw" value="${L.tw||''}"> kg × <input class="n" type="number" placeholder="${r.reps}" data-lg="tr" value="${L.tr||''}"> reps</div>`:''}`:''}
  <input class="t" data-lg="note" placeholder="Ressenti, notes…" value="${esc(L.note||'')}" aria-label="Notes">
  <button class="lnk" data-pedit="1">${S.pedit?'Fermer les réglages':'Réglages de la séance'}</button>
  ${S.pedit?`<div class="pe">${r.h?'Séries après la lourde':'Séries'} ${u('sets')} Reps ${u('reps')} RPE ${u('rpe','step="0.5"')} Repos <input class="n" type="number" step="0.5" min="0.5" data-rest="${r.h?'rh':'rv'}" value="${rest}" aria-label="Repos en minutes"> min</div>`:''}
